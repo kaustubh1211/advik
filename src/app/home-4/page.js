@@ -5,7 +5,7 @@ import React from "react";
 const Home4 = () => {
   return (
     <PageWrapper headerStyle={5} footerBg={"light"} navBg={"secondary"}>
-      {/* <Home4Main /> */}
+      <Home4Main />
     </PageWrapper>
   );
 };

@@ -10,7 +10,7 @@ const Home5 = () => {
       isTextWhite={true}
       isNavbarAppointmentBtn={true}
     >
-      {/* <Home5Main /> */}
+      <Home5Main />
     </PageWrapper>
   );
 };
