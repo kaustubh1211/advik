@@ -4,7 +4,7 @@ import PageWrapper from "@/components/shared/wrappers/PageWrapper";
 const Home3 = () => {
   return (
     <PageWrapper headerStyle={5} footerBg={"light"}>
-      <Home3Main />
+      {/* <Home3Main /> */}
     </PageWrapper>
   );
 };
