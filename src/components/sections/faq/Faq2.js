@@ -100,8 +100,8 @@ const Faq2 = () => {
                     <div className="card-body">
                       <p>
                       Browse our products: Explore our categories and use the search bar to find specific items
-Create an account: Click the "Sign Up" button to create your personal account
-Add items to cart: Simply click "Add to Cart" for items you want to purchase
+Create an account: Click the Sign Up button to create your personal account
+Add items to cart: Simply click Add to Cart for items you want to purchase
 Checkout securely: Enter your shipping and payment information to complete your purchase
                       </p>
                     </div>

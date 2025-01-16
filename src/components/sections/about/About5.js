@@ -31,7 +31,7 @@ const About5 = ({ pt }) => {
                 </p>
               </div>
               <p>
-              Made from 100% natural bamboo, these products are durable, biodegradable, and stylish. Whether it's bamboo bottles, utensils, or home decor, they are crafted to meet your needs while caring for the planet.
+              Made from 100% natural bamboo, these products are durable, biodegradable, and stylish. Whether it is bamboo bottles, utensils, or home decor, they are crafted to meet your needs while caring for the planet.
               Sustainability is at the core of what we do. Each product is thoughtfully designed to minimize environmental impact, ensuring a greener future for generations to come. Choose bamboo—because every small step towards eco-friendliness counts.
               </p>
               {/* <div className="about-author-info d-flex">
