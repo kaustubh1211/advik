@@ -1,0 +1,32 @@
+[
+  {
+    "question": "What materials are used in products?",
+    "ans": "Our products are made from high-quality, sustainable bamboo, ensuring durability and eco-friendliness. We also use biodegradable or recyclable materials for additional components, like bristles or ink refills.",
+    "img": null,
+    "videoUrl": null,
+    "isVideo": false
+  },
+  {
+    "question": "I am a new user. How should I start?",
+    "ans": "Browse our products: Explore our categories and use the search bar to find specific items Create an account: Click the Sign Up button to create your personal account Add items to cart: Simply click Add to Cart for items you want to purchase Checkout securely: Enter your shipping and payment information to complete your purchase",
+    "img": null,
+    "videoUrl": null,
+    "isVideo": true
+  },
+ 
+  {
+    "question": " Returns and refunds",
+    "ans": "Return Window: You have 30 days from delivery to initiate a return Condition Requirements: Items must be unused, in original packaging, with all tags attached.",
+    "img": null,
+    "videoUrl": null,
+    "isVideo": false
+  },
+  {
+    "question": "Are my details secured?",
+    "ans": "Secure Encryption: All transactions are protected with industry-standard SSL encryption Payment Security: We never store your complete credit card information Personal Data Protection: Your personal information is securely stored and never shared with third parties.",
+    "img": null,
+    "videoUrl": null,
+    "isVideo": false
+  }
+
+]
