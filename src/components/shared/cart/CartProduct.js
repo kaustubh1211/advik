@@ -33,7 +33,7 @@ const CartProduct = ({
   const netPriceModified = modifyAmount(netPrice);
   const totalPiceModified = modifyAmount(totalPrice);
   const isQuantiy = quantity > 1;
-
+ 
   //   get quantity
   useEffect(() => {
     if (!isWishlist) {

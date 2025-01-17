@@ -47,8 +47,8 @@ const CartContextProvider = ({ children }) => {
     const cartProductFromLocalStorage = getItemsFromLocalstorage("cart");
 
     if (!cartProductFromLocalStorage) {
-      setCartProducts(demoProducts);
-      addItemsToLocalstorage("cart", demoProducts);
+      // setCartProducts(demoProducts);
+      // addItemsToLocalstorage("cart", demoProducts);
     } else [setCartProducts(cartProductFromLocalStorage)];
   }, []);
   // add  product = localstorage cart
