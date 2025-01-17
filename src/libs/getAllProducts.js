@@ -1,14 +1,12 @@
 import allProducts from "@/../public/fakedata/products.json";
 import comments from "@/../public/fakedata/productComments.json";
 import reviews from "@/../public/fakedata/productReviews.json";
-const productImage1 = "/img/ProductPHOTOS-2/6.png";
-const productImage2 = "/img/ProductPHOTOS-2/4.png";
-const productImage3 = "/img/ProductPHOTOS-2/3.png";
-const productImage4 = "/img/ProductPHOTOS-2/2.png";
-const productImage5 = "/img/ProductPHOTOS-2/5.png";
-const productImage6 = "/img/ProductPHOTOS-2/1.png";
-
-
+const productImage1 = "/img/PRODUCTPHOTOS/6.png";
+const productImage2 = "/img/PRODUCTPHOTOS/4.png";
+const productImage3 = "/img/PRODUCTPHOTOS/3.png";
+const productImage4 = "/img/PRODUCTPHOTOS/2.png";
+const productImage5 = "/img/PRODUCTPHOTOS/5.png";
+const productImage6 = "/img/PRODUCTPHOTOS/1.png";
 const getAllProducts = () => {
   const images = [
     productImage1,
