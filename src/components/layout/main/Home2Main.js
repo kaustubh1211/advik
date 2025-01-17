@@ -17,11 +17,11 @@ const Home2Main = () => {
       <About5 />
       {/* <Categories3 /> */}
       {/* <Products3 isDouble={true} /> */}
-      {/* <CounterUp2 /> */}
       <FeaturedProducts />
-      <CallToAction2 />
+      <CallToAction2 mb={"mb-100"} />
       {/* <Blogs2 type={2} pb={"pb-70"} /> */}
-      <Features4 type={2} mb={" mb-120"} />
+      <CounterUp2  />
+      <Features4 type={2} mb={" mb-90"} />
     </main>
   );
 };

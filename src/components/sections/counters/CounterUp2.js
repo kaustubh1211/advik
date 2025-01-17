@@ -5,14 +5,14 @@ const CounterUp2 = () => {
   const items = [
     {
       title: "Active Clients",
-      num: 733,
+      num: 100,
       letter: null,
       image: "/img/icons/icon-img/2.png",
       sym: "+",
     },
     {
-      title: "Cup Of Coffee",
-      num: 33,
+      title: "Product sale",
+      num: 250,
       letter: "K",
       image: "/img/icons/icon-img/3.png",
       sym: "+",
@@ -25,7 +25,7 @@ const CounterUp2 = () => {
       sym: "+",
     },
     {
-      title: "Country Cover",
+      title: "Categary Cover",
       num: 21,
       letter: null,
       image: "/img/icons/icon-img/5.png",

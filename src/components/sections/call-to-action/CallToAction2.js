@@ -4,7 +4,7 @@ import Link from "next/link";
 const CallToAction2 = () => {
   return (
     <div
-      className="ltn__call-to-action-area ltn__call-to-action-4 bg-image pt-115 pb-120"
+      className="ltn__call-to-action-area ltn__call-to-action-4 bg-image pt-115 pb-120 mb-120"
       data-bs-bg="/img/bg/6.jpg"
     >
       <div className="container">
