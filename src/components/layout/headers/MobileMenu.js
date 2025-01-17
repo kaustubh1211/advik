@@ -14,67 +14,9 @@ const MobileMenu = () => {
   const navItems = [
     {
       name: "Home",
-      path: "#",
+      path: "/",
       accordion: null,
-      accordionItems: [
-        {
-          name: "Home Pages 01",
-
-          path: "/",
-        },
-        {
-          name: "Home Pages 02",
-
-          path: "/home-2",
-        },
-        {
-          name: "Home Pages 03",
-
-          path: "/home-3",
-        },
-        {
-          name: "Home Pages 04",
-
-          path: "/home-4",
-        },
-        {
-          name: "Home Pages 05",
-
-          path: "/home-5",
-          label: "video",
-        },
-        {
-          name: "Home Pages 06",
-
-          path: "/home-6",
-        },
-        {
-          name: "Home Pages 07",
-
-          path: "/home-7",
-        },
-        {
-          name: "Home Pages 08",
-
-          path: "/home-8",
-        },
-        {
-          name: "Home Pages 09",
-
-          path: "/home-9",
-        },
-        {
-          name: "Home Pages 10",
-
-          path: "/home-10",
-        },
-        {
-          name: "Home Pages 11",
-
-          path: "/home-11",
-          label: "service",
-        },
-      ],
+    
     },
     {
       name: "About",
@@ -86,50 +28,13 @@ const MobileMenu = () => {
 
           path: "/about",
         },
-        {
-          name: "Services",
-
-          path: "/services",
-        },
-        {
-          name: "Service Details",
-
-          path: "/services/1",
-        },
-        {
-          name: "Portfolio",
-
-          path: "/portfolio",
-        },
-        {
-          name: "Portfolio - 02",
-
-          path: "/portfolio-2",
-        },
-        {
-          name: "Portfolio Details",
-          path: "/portfolio/1",
-        },
-        {
-          name: "Team",
-
-          path: "/team",
-        },
-        {
-          name: "Team Details",
-
-          path: "/team/1",
-        },
+    
         {
           name: "FAQ",
 
           path: "/faq",
         },
-        {
-          name: "Google Map Locations",
-
-          path: "/locations",
-        },
+     
       ],
     },
     {
@@ -137,187 +42,14 @@ const MobileMenu = () => {
       path: "/shop",
       accordion: null,
       isNestedaccordion: null,
-      accordionItems: [
-        {
-          name: "Shop",
-
-          path: "/shop",
-        },
-        {
-          name: "Shop Grid",
-
-          path: "/shop-grid",
-        },
-        {
-          name: "Shop Left sidebar",
-
-          path: "/shop-left-sidebar",
-        },
-        {
-          name: "Shop right sidebar",
-
-          path: "/shop-right-sidebar",
-        },
-        {
-          name: "Shop details",
-
-          path: "/products/1",
-        },
-        {
-          name: "Shop details 02",
-          path: "/shop-details-2",
-        },
-
-        {
-          name: "Cart",
-
-          path: "/cart",
-        },
-        {
-          name: "Wishlist",
-
-          path: "/wishlist",
-        },
-        {
-          name: "Checkout",
-
-          path: "/checkout",
-        },
-        {
-          name: "Order Tracking",
-
-          path: "/order-tracking",
-        },
-        {
-          name: "My Account",
-
-          path: "/account",
-        },
-        {
-          name: "Sign in",
-
-          path: "/login",
-        },
-        {
-          name: "Register",
-
-          path: "/register",
-        },
-      ],
+   
     },
+  
     {
-      name: "News",
-      path: "#",
+      name: "cart",
+      path: "/cart",
       accordion: null,
-      accordionItems: [
-        {
-          name: "News",
-
-          path: "/blogs",
-        },
-        {
-          name: "News Grid",
-
-          path: "/blogs-grid",
-        },
-        {
-          name: "News Left sidebar",
-
-          path: "/blog-left-sidebar",
-        },
-        {
-          name: "News Right sidebar",
-
-          path: "/blog-right-sidebar",
-        },
-        {
-          name: "News details",
-
-          path: "/blogs/1",
-        },
-      ],
-    },
-    {
-      name: "Pages",
-      path: "#",
-      accordion: null,
-      accordionItems: [
-        {
-          name: "About",
-
-          path: "/about",
-        },
-        {
-          name: "Services",
-
-          path: "/services",
-        },
-        {
-          name: "Service Details",
-
-          path: "/services/1",
-        },
-        {
-          name: "Portfolio",
-
-          path: "/portfolio",
-        },
-        {
-          name: "Portfolio - 02",
-
-          path: "/portfolio-2",
-        },
-        {
-          name: "Portfolio Details",
-          path: "/portfolio/1",
-        },
-        {
-          name: "Team",
-
-          path: "/team",
-        },
-        {
-          name: "Team Details",
-
-          path: "/team/1",
-        },
-        {
-          name: "FAQ",
-
-          path: "/faq",
-        },
-
-        {
-          name: "History",
-
-          path: "/history",
-        },
-        {
-          name: "Appointment",
-
-          path: "/contact",
-        },
-        {
-          name: "Google Map Locations",
-
-          path: "/locations",
-        },
-        {
-          name: "404",
-
-          path: "/error",
-        },
-        {
-          name: "Contact",
-
-          path: "/contact",
-        },
-        {
-          name: "Coming Soon",
-
-          path: "/coming-soon",
-        },
-      ],
+    
     },
     {
       name: "Contact",
