@@ -1,3 +1,5 @@
+
+"use client"
 import CheckoutPrimary from "@/components/sections/checkout/CheckoutPrimary";
 import Features4 from "@/components/sections/features/Features4";
 import HeroPrimary from "@/components/sections/hero-banners/HeroPrimary";

@@ -1,7 +1,35 @@
+"use client";
 import Link from "next/link";
 import React from "react";
+import { useSession, signOut } from "next-auth/react";
+import { useEffect } from "react";
+
 
 const AccountPrimary = () => {
+ 
+
+  const {data:session} = useSession();
+    useEffect(() => {
+      // Prevent mismatches by waiting for client hydration
+      console.log("Session:", session);
+    }, [session]);
+
+    if(!session) {
+      return (
+        <div className="text-center mb-40">
+        <h1>You are not Login</h1>
+        <p>Please Login First</p>
+        <Link href="/login">
+        <button className="theme-btn-1 btn btn-block w-10 " type="submit"
+       
+       >
+          Login 
+        </button>
+          </Link>
+      </div>
+      )
+    }
+      
   return (
     <div className="liton__wishlist-area pb-70">
       <div className="container">
@@ -33,9 +61,18 @@ const AccountPrimary = () => {
                         <Link data-bs-toggle="tab" href="#liton_tab_1_5">
                           Account Details <i className="fas fa-user"></i>
                         </Link>
-                        <Link href="/login">
-                          Logout <i className="fas fa-sign-out-alt"></i>
-                        </Link>
+                        <div className="text-center">
+                          <button
+                            data-bs-toggle="tab"
+                            className="theme-btn-1 btn reverse-color btn-block"
+                            type="submit"
+                            onClick={() => {
+                              signOut();
+                            }}
+                          >
+                            Logout <i className="fas fa-sign-out-alt"></i>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -47,12 +84,8 @@ const AccountPrimary = () => {
                       >
                         <div className="ltn__myaccount-tab-content-inner">
                           <p>
-                            Hello <strong>UserName</strong> (not{" "}
-                            <strong>UserName</strong>?{" "}
-                            <small>
-                              <Link href="/login">Log out</Link>
-                            </small>{" "}
-                            )
+                            Hello <strong>{session.user.name}</strong> 
+                        
                           </p>
                           <p>
                             From your account dashboard you can view your{" "}

@@ -1,3 +1,5 @@
+
+"use client"
 import CheckoutMain from "@/components/layout/main/CheckoutMain";
 import PageWrapper from "@/components/shared/wrappers/PageWrapper";
 

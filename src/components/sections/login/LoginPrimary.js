@@ -1,7 +1,72 @@
+"use client";
+
 import Link from "next/link";
 import React from "react";
+import { signIn, useSession, signOut } from "next-auth/react";
+import { useEffect } from "react";
+import useSweetAlert from "@/hooks/useSweetAlert";
+import { useState } from "react";
 
 const LoginPrimary = () => {
+  const [isClient, setIsClient] = useState(false);
+
+  
+  const alertS=useSweetAlert();
+
+  const { data: session } = useSession();
+  useEffect(() => {
+    // Prevent mismatches by waiting for client hydration
+    console.log("Session:", session);
+  }, [session]);
+
+  const  handleLogin =async (e) => {
+    try{
+
+      e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    const result = await signIn("credentials", { email, password });
+  }
+  catch(err){
+    console.log(err);
+  }
+
+    if(result?.error){
+      alert(result.error);
+    }
+    else{
+      alertS("Login successful!");
+    }
+
+  }
+  // Ensure client-side rendering
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Only render after client-side hydration
+  if (!isClient) {
+    return null;
+  }
+  if (session) {
+    return (
+      <div className={" text-center"}>
+        <div className="account-create text-center pt-00">
+          <h1>WELCOME {session.user.name}!</h1>
+          <p>You are already signed in.</p>
+          <button
+           className="theme-btn-1 btn reverse-color btn-block"
+                    type="submit"
+            onClick={() => {
+              signOut();
+            }}
+          >
+            Sign out
+          </button>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="ltn__login-area pb-65">
       <div className="container">
@@ -22,12 +87,16 @@ const LoginPrimary = () => {
         <div className="row">
           <div className="col-lg-6">
             <div className="account-login-inner">
-              <form action="#" className="ltn__form-box contact-form-box">
-                <input type="text" name="email" placeholder="Email*" />
+              <form
+                onSubmit={handleLogin}
+                className="ltn__form-box contact-form-box"
+              >
+                <input type="email" name="email" placeholder="email*" required />
                 <input
                   type="password"
                   name="password"
                   placeholder="Password*"
+                  required
                 />
                 <div className="btn-wrapper mt-0">
                   <button
@@ -47,6 +116,7 @@ const LoginPrimary = () => {
                     <small>FORGOTTEN YOUR PASSWORD?</small>
                   </Link>
                 </div>
+                
               </form>
             </div>
           </div>

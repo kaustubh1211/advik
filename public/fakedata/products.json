@@ -5,24 +5,17 @@
     "desc": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Recusandae asperiores sit odit nesciunt, aliquid, deleniti non et ut dolorem!",
     "featured": true,
     "price": 209,
-    "previousPrice": 67,
-    "date": 114,
+ 
+   
     "bestSeller": false,
     "status": "new",
-    "collection": "Food & Drinks",
-    "category": "hot sale",
-    "type": "Vegetables",
-    "size": "S",
-    "color": "navy",
-    "tags": ["popular", "desgin", "develop", "icon"],
-    "availability": "Out of stock",
-    "topRated": true,
-    "productType": "Chair",
-    "brand": "Amazon",
-    "disc": 27,
-    "offer": "black friday",
-    "views": 56,
-    "reviews": 44
+    
+    "availability": "In stock",
+
+    "topRated": true
+   
+
+
   },
   {
     "id": 2,
@@ -41,13 +34,8 @@
     "color": "pink",
     "tags": ["auto parts", "oil change", "body color"],
     "availability": "In stock",
-    "topRated": true,
-    "productType": "Table",
-    "brand": "Amazon",
-    "disc": 20,
-    "offer": "cyber monday",
-    "views": 60,
-    "reviews": 98
+    "topRated": true
+ 
   },
   {
     "id": 3,

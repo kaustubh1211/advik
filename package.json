@@ -3,14 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "create-products-file": "node scripts/createProductsFile.js",
+    "dev": "npm run create-products-file && next dev",
+    "build": "npm run create-products-file && next build",
+    "start": "npm run create-products-file && next start",
     "lint": "next lint"
+
+
+    
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "moment": "^2.30.1",
-    "next": "^15.1.4",
+    "mysql2": "^3.12.0",
+    "next": "^15.1.5",
+    "next-auth": "^4.24.11",
     "nodemailer": "^6.9.15",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

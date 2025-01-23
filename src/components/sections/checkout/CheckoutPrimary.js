@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/role-supports-aria-props */
 "use client";
 import CheckoutProduct from "@/components/shared/checkout/CheckoutProduct";
 import Nodata from "@/components/shared/no-data/Nodata";
@@ -12,6 +11,8 @@ const paymnetImage3 = "/img/icons/payment-3.png";
 import useSweetAlert from "@/hooks/useSweetAlert";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { signOut, useSession } from "next-auth/react";
+import React from "react";
 
 const CheckoutPrimary = () => {
   const [isPlaceOrder, setIsPlaceOrder] = useState(false);
@@ -46,6 +47,23 @@ const CheckoutPrimary = () => {
       setIsPlaceOrder(true);
     }
   }, [isProducts]);
+
+  //check user is login
+  const { data: session } = useSession();
+
+  if (!session) {
+    return (
+      <div className="text-center">
+        <h1>You are not Login</h1>
+        <p>Please Login</p>
+        <Link href="/login">
+          <button className="theme-btn-1 btn btn-block w-10 " type="submit">
+            Login
+          </button>
+        </Link>
+      </div>
+    );
+  }
   return (
     <div className="ltn__checkout-area mb-105">
       <div className="container">
@@ -53,57 +71,7 @@ const CheckoutPrimary = () => {
           <div className="col-lg-12">
             <div className="ltn__checkout-inner">
               {/* login */}
-              <div className="ltn__checkout-single-content ltn__returning-customer-wrap">
-                <h5>
-                  Returning customer?{" "}
-                  <Link
-                    className="ltn__secondary-color"
-                    href="#ltn__returning-customer-login"
-                    data-bs-toggle="collapse"
-                  >
-                    Click here to login
-                  </Link>
-                </h5>
-                <div
-                  id="ltn__returning-customer-login"
-                  className="collapse ltn__checkout-single-content-info"
-                >
-                  <div className="ltn_coupon-code-form ltn__form-box">
-                    <p>Please login your accont.</p>
-                    <form action="#">
-                      <div className="row">
-                        <div className="col-md-6">
-                          <div className="input-item input-item-name ltn__custom-icon">
-                            <input
-                              type="text"
-                              name="ltn__name"
-                              placeholder="Enter your name"
-                            />
-                          </div>
-                        </div>
-                        <div className="col-md-6">
-                          <div className="input-item input-item-email ltn__custom-icon">
-                            <input
-                              type="email"
-                              name="ltn__email"
-                              placeholder="Enter email address"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <button className="btn theme-btn-1 btn-effect-1 text-uppercase">
-                        Login
-                      </button>
-                      <label className="input-info-save mb-0">
-                        <input type="checkbox" name="agree" /> Remember me
-                      </label>
-                      <p className="mt-30">
-                        <Link href="/register">Lost your password?</Link>
-                      </p>
-                    </form>
-                  </div>
-                </div>
-              </div>
+             
               {/* coupon */}
               <div className="ltn__checkout-single-content ltn__coupon-code-wrap">
                 <h5>

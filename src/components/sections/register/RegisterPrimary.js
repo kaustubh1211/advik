@@ -1,7 +1,58 @@
-import Link from "next/link";
+"use client";
 import React from "react";
+import { useState } from "react";
+import Link from "next/link";
 
 const RegisterPrimary = () => {
+  const [error, setError] = useState(null);
+
+
+
+  //set all data in object
+  const [formData, setFormData] = useState({
+    name: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (formData.password != formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+    console.log(formData);
+
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+      console.log(result);
+
+      if (response.ok) {
+        alert("Registration successful! Please log in.");
+        setFormData({
+          name: "",
+          lastName: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        });
+        window.location.href = "/login";
+      } else {
+        alert(result.message);
+      }
+    } catch (err) {
+      console.log("Error-registeration" + err);
+    }
+  };
   return (
     <div className="ltn__login-area pb-110">
       <div className="container">
@@ -22,20 +73,65 @@ const RegisterPrimary = () => {
         <div className="row">
           <div className="col-lg-6 offset-lg-3">
             <div className="account-login-inner">
-              <form action="#" className="ltn__form-box contact-form-box">
-                <input type="text" name="firstname" placeholder="First Name" />
-                <input type="text" name="lastname" placeholder="Last Name" />
-                <input type="text" name="email" placeholder="Email*" />
+              <form
+                action="#"
+                onSubmit={handleSubmit}
+                className="ltn__form-box contact-form-box"
+              >
+                <input
+                  type="text"
+                  name="firstname"
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                  placeholder="First Name"
+                  required
+                />
+                <input
+                  type="text"
+                  name="lastname"
+                  value={formData.lastName}
+                  onChange={(e) =>
+                    setFormData({ ...formData, lastName: e.target.value })
+                  }
+                  placeholder="Last Name"
+                  required
+                />
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  placeholder="Email*"
+                  required
+                />
                 <input
                   type="password"
                   name="password"
                   placeholder="Password*"
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
+                  required
                 />
                 <input
                   type="password"
                   name="confirmpassword"
                   placeholder="Confirm Password*"
+                  value={formData.confirmPassword}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      confirmPassword: e.target.value,
+                    })
+                  }
+                  required
                 />
+                {error && <p style={{ color: "red" }}>{error}</p>}
                 <label className="checkbox-inline">
                   <input type="checkbox" /> I consent to Herboil processing my
                   personal data in order to send personalized marketing material
