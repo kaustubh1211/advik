@@ -8,15 +8,12 @@
     "build": "npm run create-products-file && next build",
     "start": "npm run create-products-file && next start",
     "lint": "next lint"
-
-
-    
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
     "moment": "^2.30.1",
     "mysql2": "^3.12.0",
-    "next": "^15.1.5",
+    "next": "^15.1.6",
     "next-auth": "^4.24.11",
     "nodemailer": "^6.9.15",
     "react": "^19.0.0",

@@ -6,12 +6,13 @@ import { signIn, useSession, signOut } from "next-auth/react";
 import { useEffect } from "react";
 import useSweetAlert from "@/hooks/useSweetAlert";
 import { useState } from "react";
+import { redirect } from "next/navigation";
 
 const LoginPrimary = () => {
   const [isClient, setIsClient] = useState(false);
+  const [error, setError] = useState(null);
 
-  
-  const alertS=useSweetAlert();
+  const alertS = useSweetAlert();
 
   const { data: session } = useSession();
   useEffect(() => {
@@ -19,26 +20,25 @@ const LoginPrimary = () => {
     console.log("Session:", session);
   }, [session]);
 
-  const  handleLogin =async (e) => {
-    try{
-
+  const handleLogin = async (e) => {
+    try {
       e.preventDefault();
-    const email = e.target.email.value;
-    const password = e.target.password.value;
-    const result = await signIn("credentials", { email, password });
-  }
-  catch(err){
-    console.log(err);
-  }
-
-    if(result?.error){
-      alert(result.error);
+      const email = e.target.email.value;
+      const password = e.target.password.value;
+      const result = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+      if (result?.error) {
+        setError("Invalid email or password");
+      } else {
+        // alert("Login successful!");
+      }
+    } catch (err) {
+      console.log(err);
     }
-    else{
-      alertS("Login successful!");
-    }
-
-  }
+  };
   // Ensure client-side rendering
   useEffect(() => {
     setIsClient(true);
@@ -55,8 +55,8 @@ const LoginPrimary = () => {
           <h1>WELCOME {session.user.name}!</h1>
           <p>You are already signed in.</p>
           <button
-           className="theme-btn-1 btn reverse-color btn-block"
-                    type="submit"
+            className="theme-btn-1 btn reverse-color btn-block"
+            type="submit"
             onClick={() => {
               signOut();
             }}
@@ -91,13 +91,21 @@ const LoginPrimary = () => {
                 onSubmit={handleLogin}
                 className="ltn__form-box contact-form-box"
               >
-                <input type="email" name="email" placeholder="email*" required />
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="email*"
+                  required
+                />
                 <input
                   type="password"
                   name="password"
                   placeholder="Password*"
                   required
                 />
+            
+                {error && <p style={{ color: "red" }}>{error}</p>}
+             
                 <div className="btn-wrapper mt-0">
                   <button
                     className="theme-btn-1 btn btn-block w-100"
@@ -116,7 +124,6 @@ const LoginPrimary = () => {
                     <small>FORGOTTEN YOUR PASSWORD?</small>
                   </Link>
                 </div>
-                
               </form>
             </div>
           </div>

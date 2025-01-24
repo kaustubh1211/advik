@@ -64,6 +64,7 @@ const ProductCard = ({ product }) => {
                     quantity: 1,
                     color: color,
                   });
+                  
                 }}
                 href="#"
                 title="Add to Cart"
