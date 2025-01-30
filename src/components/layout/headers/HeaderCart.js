@@ -61,7 +61,7 @@ const HeaderCart = () => {
                       </span>
                     </div>
                   </div>
-                );
+                );      
               }
             )
           )}

@@ -50,11 +50,9 @@ export default NextAuth({
 
 
   callbacks: {
-    async jwt({ token, account, profile }) {
-      // Add Google-specific fields to token
-      if (account?.provider === "google") {
-        token.id = profile.id;
-        token.picture = profile.picture;
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id; // Ensure `id` is included in the token
       }
       return token;
     },

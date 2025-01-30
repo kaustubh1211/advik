@@ -70,6 +70,7 @@ const CartProduct = ({
       <td
         className="cart-product-remove"
         onClick={() =>
+        
           isWishlist
             ? deleteProductFromWishlist(id, title)
             : deleteProductFromCart(id, title)

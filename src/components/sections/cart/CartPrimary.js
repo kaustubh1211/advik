@@ -10,6 +10,7 @@ import modifyAmount from "@/libs/modifyAmount";
 import { useCartContext } from "@/providers/CartContext";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 const CartPrimary = () => {
   const { cartProducts: currentProducts, setCartProducts } = useCartContext();
@@ -24,18 +25,41 @@ const CartPrimary = () => {
   const vat = subTotalPrice ? 15 : 0;
   const totalPrice = modifyAmount(subTotalPrice + vat);
   const isCartProduct = cartProducts?.length || false;
+ 
+  const { data: session } = useSession();
+  useEffect(() => {
+    console.log("Session data:", session); // Debug session data
+  }, [session]);
 
-  // update cart
-  const handleUpdateCart = () => {
-    addItemsToLocalstorage("cart", [...updateProducts]);
-    setCartProducts([...updateProducts]);
-    creteAlert("success", "Success! Cart updated.");
-    setIsUpdate(false);
-  };
   useEffect(() => {
     setUpdateProducts([...cartProducts]);
     setIsisClient(true);
   }, [cartProducts]);
+  // update cart
+  const handleUpdateCart = async () => {
+    try {
+      // Sync updated cart with the backend
+      const response = await fetch("/api/synch/page", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: session.user.id, // Replace with actual user ID
+          cart: updateProducts,
+        }),
+      });
+  
+      if (!response.ok) throw new Error("Failed to sync cart");
+  
+      // Update state and local storage
+      addItemsToLocalstorage("cart", [...updateProducts]);
+      setCartProducts([...updateProducts]);
+      creteAlert("success", "Success! Cart updated.");
+      setIsUpdate(false);
+    } catch (error) {
+      console.error("Error updating cart:", error);
+      creteAlert("error", "Failed to update cart.");
+    }
+  };
   return (
     <div className="liton__shoping-cart-area mb-120">
       <div className="container">

@@ -59,6 +59,7 @@ const ProductCard = ({ product }) => {
               <Link
                 onClick={(e) => {
                   e.preventDefault();
+                  console.log("Adding product to cart:", { ...product, quantity: 1 });
                   addProductToCart({
                     ...product,
                     quantity: 1,
