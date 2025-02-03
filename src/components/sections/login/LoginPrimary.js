@@ -6,7 +6,6 @@ import { signIn, useSession, signOut } from "next-auth/react";
 import { useEffect } from "react";
 import useSweetAlert from "@/hooks/useSweetAlert";
 import { useState } from "react";
-import { redirect } from "next/navigation";
 
 const LoginPrimary = () => {
   const [isClient, setIsClient] = useState(false);
@@ -103,9 +102,9 @@ const LoginPrimary = () => {
                   placeholder="Password*"
                   required
                 />
-            
+
                 {error && <p style={{ color: "red" }}>{error}</p>}
-             
+
                 <div className="btn-wrapper mt-0">
                   <button
                     className="theme-btn-1 btn btn-block w-100"

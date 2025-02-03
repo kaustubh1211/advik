@@ -5,6 +5,8 @@ import getItemsFromLocalstorage from "@/libs/getItemsFromLocalstorage";
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { signIn, useSession, signOut } from "next-auth/react";
+import { debounce } from "lodash";
+import { redirect, useRouter } from "next/navigation";
 
 const cartContext = createContext(null);
 
@@ -12,33 +14,45 @@ const CartContextProvider = ({ children }) => {
   const [cartStatus, setCartStatus] = useState(null);
   const [cartProducts, setCartProducts] = useState([]);
   const creteAlert = useSweetAlert();
-
+  const router = useRouter();
   const { data: session } = useSession();
   useEffect(() => {
     console.log("Session data:", session); // Debug session data
   }, [session]);
 
   // Fetch cart from backend if logged in
-  useEffect(() => {
-    const fetchCartFromBackend = async () => {
-      if (session) {
-        try {
-          const { data } = await axios.get(`/api/AddCard/page?userId=${session.user.id}`);
-          setCartProducts(data.cart || []);
-          addItemsToLocalstorage("cart", data.cart || []); // Sync local storage
-        } catch (error) {
-          console.error("Error fetching cart from backend:", error);
-        }
-      } else {
-        const cartProductFromLocalStorage = getItemsFromLocalstorage("cart");
-        if (cartProductFromLocalStorage) {
-          setCartProducts(cartProductFromLocalStorage);
-        }
-      }
-    };
+  const [loading, setLoading] = useState(false);
 
-    fetchCartFromBackend();
+  const fetchCartFromBackend = debounce(async () => {
+    if (session?.user?.id) {
+      try {
+        const { data } = await axios.get(
+          `/api/FetchCard/page?userId=${session.user.id}`
+        );
+        setCartProducts(data.cart || []);
+        addItemsToLocalstorage("cart", data.cart || []);
+      } catch (error) {
+        console.error("Error fetching cart from backend:", error);
+      }
+    }
+  }, 500); // 500ms debounce delay
+
+  useEffect(() => {
+    if (session) fetchCartFromBackend();
   }, [session]);
+
+  const refetchCart = async () => {
+    if (session) {
+      try {
+        const { data } = await axios.get(
+          `/api/FetchCard/page?userId=${session.user.id}`
+        );
+        setCartProducts(data.cart || []);
+      } catch (error) {
+        console.error("Error fetching cart:", error);
+      }
+    }
+  };
 
   // Sync cart with backend
   const syncCartWithBackend = async (cart) => {
@@ -46,31 +60,38 @@ const CartContextProvider = ({ children }) => {
       console.error("Invalid cart data during sync:", cart);
       return;
     }
-  
-    const formattedCart = cart.map(({ id, quantity, title, price }) => {
-      if (!id) {
-        console.error("Invalid cart item (missing ID):", { id, quantity, title, price });
-        return null;
-      }
-      return {
-        product_id: id, // Map frontend's `id` to backend's `product_id`
-        quantity,
-        title,
-        price,
-      };
-    }).filter(item => item !== null); // Remove invalid items
-  
+
+    const formattedCart = cart
+      .map(({ id, quantity, title, price }) => {
+        if (!id) {
+          console.error("Invalid cart item (missing ID):", {
+            id,
+            quantity,
+            title,
+            price,
+          });
+          return null;
+        }
+        return {
+          product_id: id, // Map frontend's `id` to backend's `product_id`
+          quantity,
+          title,
+          price,
+        };
+      })
+      .filter((item) => item !== null); // Remove invalid items
+
     try {
       console.log("Syncing cart with backend:", {
         userId: session?.user?.id,
         cart: formattedCart,
       });
-  
+
       const response = await axios.post("/api/synch/page", {
         userId: session?.user?.id,
         cart: formattedCart,
       });
-  
+
       console.log("Cart synced successfully:", response.data);
     } catch (error) {
       if (error.response?.status === 400) {
@@ -80,89 +101,94 @@ const CartContextProvider = ({ children }) => {
       }
     }
   };
-  
 
   // Add product to cart
-  const addProductToCart = (currentProduct, isDecreament, isTotalQuantity) => {
-    const { id: currentId, title: currentTitle } = currentProduct;
-    if (!currentProduct.id) {
+  const addProductToCart = async (currentProduct, isDecreament) => {
+    const { id: product_id, title, quantity } = currentProduct;
+
+    if (!session?.user?.id) {
+      window.location.href = `/login`;
+
+      return;
+    }
+    if (!product_id) {
       console.error("Product is missing an id:", currentProduct);
-      return; // Skip invalid products
-    }  
-    const modifyableProduct = cartProducts?.find(
-      ({ id, title }) => id === currentId && title === currentTitle
-    );
+      return;
+    }
 
-    const previousQuantity = modifyableProduct?.quantity || 0;
-    const currentQuantity = currentProduct?.quantity;
+    const existingProduct = cartProducts.find((p) => p.id === product_id);
+    const newQuantity = isDecreament
+      ? Math.max((existingProduct?.quantity || 1) - 1, 0)
+      : (existingProduct?.quantity || 0) + 1;
 
-    let currentProducts;
+    // If quantity is 0, remove the product instead of updating
+    if (newQuantity === 0) {
+      return deleteProductFromCart(product_id, title);
+    }
 
-    if (isTotalQuantity) {
-      currentProducts = cartProducts?.map((product) =>
-        product.id === currentId && product.title === currentTitle
-          ? { ...product, quantity: currentProduct.quantity }
+    try {
+      const { data } = await axios.post("/api/AddToCard/page", {
+        userId: session?.user?.id,
+        product_id,
+        quantity: isDecreament ? -1 : 1, // Increment or decrement
+      });
+
+      console.log("Cart update success:", data);
+      refetchCart();
+
+      // Update local state and storage
+      const updatedCart = cartProducts.map((product) =>
+        product.id === product_id
+          ? { ...product, quantity: newQuantity }
           : product
       );
-      setCartStatus(previousQuantity < currentQuantity ? "increased" : "decreased");
-    } else {
-      const isAlreadyExist = !!modifyableProduct;
-
-      if (isAlreadyExist) {
-        currentProducts = cartProducts?.map((product) =>
-          product.id === currentId && product.title === currentTitle
-            ? { ...product, quantity: product.quantity + (isDecreament ? -currentQuantity : currentQuantity) }
-            : product
-        );
-        setCartStatus(isDecreament ? "decreased" : "increased");
-      } else {
-        currentProducts = [...cartProducts, currentProduct];
-        setCartStatus("added");
-      }
+      console.log("add to card" + updatedCart);
+      setCartProducts(updatedCart);
+      addItemsToLocalstorage("cart", updatedCart);
+      setCartStatus(isDecreament ? "decreased" : "increased");
+    } catch (error) {
+      console.error("Error updating cart:", error);
     }
-
-    setCartProducts(currentProducts);
-    addItemsToLocalstorage("cart", currentProducts);
-
-    // Sync with backend
-    syncCartWithBackend(currentProducts);
   };
 
-  const deleteProductFromCart = (currentId, currentTitle) => {
-    // Validate currentId
-    // if (!currentId) {
-    //   console.error("Invalid currentId during deletion:", { currentId, currentTitle });
-    //   return;
-    // }
-  
-    console.log("Deleting product from cart:", { currentId, currentTitle });
-  
-    // Filter out the product to delete
+  const deleteProductFromCart = async (currentId, currentTitle) => {
+    if (!currentId) {
+      console.error("❌ Product ID is missing. Cannot delete from cart.");
+      return; // Stop execution if product ID is undefined
+    }
+
+    if (!session || !session.user) {
+      console.error("❌ User is not logged in. Cannot delete from backend.");
+      return;
+    }
+
+    console.log("✅ Deleting product from cart:", { currentId, currentTitle });
+
+    // Remove from local state
     const updatedCart = cartProducts.filter(({ id }) => id !== currentId);
-  
-    // Update state and local storage
     setCartProducts(updatedCart);
     addItemsToLocalstorage("cart", updatedCart);
-  
+
     // Show success alert
     creteAlert("success", `${currentTitle} removed from cart.`);
-  
-    // Sync with backend only if the cart is not empty
-    if (updatedCart.length > 0) {
-      setTimeout(() => {
-        syncCartWithBackend(updatedCart);
-      }, 0);
-    } else {
-      console.log("Cart is now empty. Syncing empty cart with backend.");
-      setTimeout(() => {
-        syncCartWithBackend([]); // Explicitly sync an empty cart
-      }, 0);
+
+    try {
+      // Delete from backend
+      const response = await axios.delete("/api/DeleteToCard/page", {
+        data: { userId: session.user.id, productId: currentId },
+      });
+
+      if (response.data.success) {
+        console.log("✅ Product removed from cart:", response.data.message);
+        refetchCart();
+      } else {
+        console.error("❌ Failed to remove product:", response.data.message);
+      }
+    } catch (error) {
+      console.error("❌ Error removing from cart:", error);
     }
   };
-  
-  
-  
-  
+
   return (
     <cartContext.Provider
       value={{

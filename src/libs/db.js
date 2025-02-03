@@ -5,6 +5,9 @@ const pool = mysql.createPool({
   user: "root",
   password: "password", 
   database: "advik", 
+  waitForConnections: true, // Important: Wait if no connection is available
+  connectionLimit: 10,      // Set the max connections allowed
+  queueLimit: 0             // 0 means unlimited queued requests
 });
 
 export default pool;

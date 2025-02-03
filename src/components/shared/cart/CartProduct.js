@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import countDiscount from "@/libs/countDiscount";
@@ -19,8 +18,9 @@ const CartProduct = ({
   setIsUpdate,
   isWishlist,
 }) => {
-  const { id, title, price, quantity: quantity1, image, disc, color } = product;
-  // dom referance
+  const { product_id, title, price, quantity: quantity1, image, disc, color } = product;
+
+  // dom reference
   const inputRef = useRef(null);
   // hooks
   const { deleteProductFromCart, addProductToCart } = useCartContext();
@@ -32,60 +32,66 @@ const CartProduct = ({
   const totalPrice = countTotalPrice([{ ...product, quantity }]);
   const netPriceModified = modifyAmount(netPrice);
   const totalPiceModified = modifyAmount(totalPrice);
-  const isQuantiy = quantity > 1;
- 
-  //   get quantity
+  const isQuantity = quantity > 1;
+
+  // Handle quantity updates with event listeners
   useEffect(() => {
     if (!isWishlist) {
       const inputParent = inputRef.current;
       const input = inputParent.querySelector("input");
-      setTimeout(() => {
-        const increament = inputParent.querySelector(".inc");
-        const decreament = inputParent.querySelector(".dec");
+      const increament = inputParent.querySelector(".inc");
+      const decreament = inputParent.querySelector(".dec");
 
-        increament.addEventListener("click", () => {
-          setQuantity(parseInt(input.value));
-          setIsUpdate(true);
-        });
-        decreament.addEventListener("click", () => {
-          setQuantity(parseInt(input.value));
-          setIsUpdate(true);
-        });
-      }, 500);
+      const handleIncrement = () => {
+        setQuantity((prevQuantity) => prevQuantity + 1);
+        setIsUpdate(true);
+      };
+      const handleDecrement = () => {
+        setQuantity((prevQuantity) => prevQuantity - 1);
+        setIsUpdate(true);
+      };
+
+      // increament.addEventListener("click", handleIncrement);
+      // decreament.addEventListener("click", handleDecrement);
+
+      return () => {
+        // increament.removeEventListener("click", handleIncrement);
+        // decreament.removeEventListener("click", handleDecrement);
+      };
     }
   }, [isWishlist]);
-  // handle updated products
+
+  // Handle updates to the product list when quantity changes
   useEffect(() => {
     if (!isWishlist) {
-      const newUptedProducts = [...updateProducts]?.map((product) =>
-        id === product?.id ? { ...product, quantity } : product
+      const updatedProducts = updateProducts.map((prod) =>
+        prod.product_id === product_id ? { ...prod, quantity } : prod
       );
-      setUpdateProducts(newUptedProducts);
+      setUpdateProducts(updatedProducts);
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isWishlist, quantity]);
+
   return (
     <tr onMouseEnter={() => setCurrentProduct(product)}>
       <td
         className="cart-product-remove"
-        onClick={() =>
-        
+        onClick={() => {
+          console.log(`Removing product: ${product_id}, title: ${title}`);
           isWishlist
-            ? deleteProductFromWishlist(id, title)
-            : deleteProductFromCart(id, title)
-        }
+            ? deleteProductFromWishlist(product_id, title)
+            : deleteProductFromCart(product_id, title);
+        }}
       >
         x
       </td>
       <td className="cart-product-image">
-        <Link href={`/products/${id}`}>
-          <Image src={image} alt="#" height={1000} width={1000} />
+        <Link href={`/products/${product_id}`}>
+          <Image src={image} alt={title} height={1000} width={1000} />
         </Link>
       </td>
       <td className="cart-product-info">
         <h4>
-          <Link href={`/products/${id}`}>{sliceText(title, 30)}</Link>
+          <Link href={`/products/${product_id}`}>{sliceText(title, 30)}</Link>
         </h4>
       </td>
       <td className="cart-product-price">₹{netPriceModified}</td>
@@ -96,7 +102,7 @@ const CartProduct = ({
           <div className="cart-plus-minus" ref={inputRef}>
             <input
               value={quantity}
-              type="text"
+              type="number"
               name="qtybutton"
               className="cart-plus-minus-box"
               onChange={(e) => {
@@ -113,11 +119,13 @@ const CartProduct = ({
       {isWishlist ? (
         <td
           className="cart-product-add-cart"
-          onClick={() =>
+          onClick={() =>{
+
             addProductToCart({
               ...product,
               quantity,
             })
+          }
           }
         >
           <Link

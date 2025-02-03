@@ -206,7 +206,7 @@ const AccountPrimary = () => {
                                   <Link href="#">edit</Link>
                                 </small>
                               </h4>
-                              <address>
+                              {/* <address> */}
                                 <p>
                                   <strong>Alex Tuntuni</strong>
                                 </p>
@@ -215,7 +215,7 @@ const AccountPrimary = () => {
                                   San Francisco, CA 94103
                                 </p>
                                 <p>Mobile: (123) 456-7890</p>
-                              </address>
+                              {/* </address> */}
                             </div>
                             <div className="col-md-6 col-12 learts-mb-30">
                               <h4>
@@ -224,7 +224,7 @@ const AccountPrimary = () => {
                                   <Link href="#">edit</Link>
                                 </small>
                               </h4>
-                              <adress>
+                              {/* <adress> */}
                                 <p>
                                   <strong>Alex Tuntuni</strong>
                                 </p>
@@ -233,7 +233,7 @@ const AccountPrimary = () => {
                                   San Francisco, CA 94103
                                 </p>
                                 <p>Mobile: (123) 456-7890</p>
-                              </adress>
+                              {/* </adress> */}
                             </div>
                           </div>
                         </div>

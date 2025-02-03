@@ -29,12 +29,13 @@ const HeaderCart = () => {
             <Nodata text={"Empty Cart!"} />
           ) : (
             cartProducts?.map(
-              ({ id, title, image, price, quantity, disc }, idx) => {
+              ({ product_id , title, image, price, quantity, disc }, idx) => {
                 const { netPrice } = countDiscount(price, disc);
+                // console.log("🛒 Cart Products:", cartProducts);
                 return (
                   <div key={idx} className="mini-cart-item clearfix">
                     <div className="mini-cart-img">
-                      <Link href={`/products/${id}`}>
+                      <Link href={`/products/${product_id}`}>
                         <Image
                           src={image}
                           alt="Image"
@@ -43,7 +44,12 @@ const HeaderCart = () => {
                         />
                       </Link>
                       <span
-                        onClick={() => deleteProductFromCart(id, title)}
+                        onClick={() => {
+                          console.log(
+                            `🆔 Clicked Item: id=${product_id}, title=${title}`
+                          );
+                          deleteProductFromCart(product_id, title);
+                        }}
                         className="mini-cart-item-delete"
                       >
                         <i className="icon-cancel"></i>
@@ -51,7 +57,7 @@ const HeaderCart = () => {
                     </div>
                     <div className="mini-cart-info">
                       <h6>
-                        <Link href={`/products/${id}`}>
+                        <Link href={`/products/${product_id}`}>
                           {" "}
                           {title?.length > 22 ? title?.slice(0, 22) : title}
                         </Link>
@@ -61,7 +67,7 @@ const HeaderCart = () => {
                       </span>
                     </div>
                   </div>
-                );      
+                );
               }
             )
           )}

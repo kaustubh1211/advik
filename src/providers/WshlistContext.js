@@ -1,76 +1,105 @@
 "use client";
-import useSweetAlert from "@/hooks/useSweetAlert";
-import addItemsToLocalstorage from "@/libs/addItemsToLocalstorage";
-import getItemsFromLocalstorage from "@/libs/getItemsFromLocalstorage";
 import { createContext, useContext, useEffect, useState } from "react";
-import getAllProducts from "@/libs/getAllProducts";
+import axios from "axios";
+import { signIn, useSession, signOut } from "next-auth/react";
 
-const wishlistContext = createContext(null);
-const WishlistContextProvider = ({ children }) => {
-  const [wishlistStatus, setWishlistStatus] = useState(null);
+const WishlistContext = createContext(null);
+
+const WishlistProvider = ({ children }) => {
   const [wishlistProducts, setWishlistProducts] = useState([]);
-  const creteAlert = useSweetAlert();
+  const [wishlistStatus, setWishlistStatus] = useState(null);
+
+  const { data: session } = useSession();
   useEffect(() => {
-    const demoProducts = getAllProducts()
-      ?.slice(0, 2)
-      ?.map((product, idx) => ({ ...product, quantity: 1 }));
+    console.log("Session data wish:", session); // Debug session data
+  }, [session]);
+  const userId = session?.user?.id;
+  // Fetch Wishlist Data from API
+  const fetchWishlist = async () => {
+    try {
+      // if (!userId) {
+      //   console.error("Error: User ID is missing.");
+      //   return;
+      // }
+  
+      console.log("Fetching wishlist for userId:", userId);
+  
+      const { data } = await axios.get(`/api/Wishlist/page?userId=${userId}`);
+  
+      console.log("Wishlist response:", data);
+    
+      setWishlistProducts(data.wishlist || []);
+    } catch (error) {
+      console.error("Error fetching wishlist:", error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchWishlist();
+  }, [session]);
+  
 
-    const wishlistProductFromLocalStorage =
-      getItemsFromLocalstorage("wishlist");
+  // Add Product to Wishlist
+  const addProductToWishlist = async (currentProduct) => {
+    try {
+      const { id: productId } = currentProduct;
+  
+    
+      if (!session?.user?.id) {
+        window.location.href = `/login`;
+  
+        return;
+      }
+  
+      const response = await axios.post("/api/Wishlist/page", {
+        userId,
+        productId,
+      });
+  
+      const { success, message } = response.data;
+  
+      if (success) {
+        setWishlistProducts((prev) => [...prev, currentProduct]);
+        localStorage.setItem("wishlist", JSON.stringify([...wishlistProducts, currentProduct]));
+        setWishlistStatus("added");
+      } else {
+        // Handle case where the product is already in the wishlist
+        console.warn(message);
+        setWishlistStatus("exist");
+      }
+    } catch (error) {
+      console.error("Error adding to wishlist:", error);
+      setWishlistStatus("exist"); // Generic error state
+    }
+  };
+  
 
-    if (!wishlistProductFromLocalStorage) {
-      setWishlistProducts(demoProducts);
-      addItemsToLocalstorage("wishlist", demoProducts);
-    } else [setWishlistProducts(wishlistProductFromLocalStorage)];
-  }, []);
-  // add  product from localstorage cart
-  const addProductToWishlist = (currentProduct) => {
-    const { id: currentId, title: currentTitle } = currentProduct;
+  // Remove Product from Wishlist
+  const deleteProductFromWishlist = async (productId) => {
+    try {
+      if (!userId) {
+        console.error("User is not logged in.");
+        return;
+      }
 
-    const modifyableProduct = wishlistProducts?.find(
-      ({ id, title }) => id === currentId && title === currentTitle
-    );
+      await axios.delete(`/api/Wishlist/page`, {
+        data: { userId, productId }, // ✅ Correct way to send data in DELETE request
+      });
 
-    const isAlreadyExist = modifyableProduct ? true : false;
-
-    if (isAlreadyExist) {
-      // creteAlert("error", "Failed ! Already exist in wishlist.");
-      setWishlistStatus("exist");
-    } else {
-      let currentProducts = [...wishlistProducts, currentProduct];
-      setWishlistProducts(currentProducts);
-      addItemsToLocalstorage("wishlist", currentProducts);
-      // creteAlert("success", "Success! added to wishlist.");
-      setWishlistStatus("added");
+      setWishlistProducts((prev) => prev.filter((item) => item.id !== productId));
+      setWishlistStatus("deleted");
+      fetchWishlist();
+    } catch (error) {
+      console.error("Error removing from wishlist:", error);
     }
   };
 
-  // delete product from localstorage cart
-  const deleteProductFromWishlist = (currentId, currentTitle) => {
-    const currentProducts = wishlistProducts?.filter(
-      ({ id, title }) => id !== currentId || title !== currentTitle
-    );
-    setWishlistProducts(currentProducts);
-    addItemsToLocalstorage("wishlist", currentProducts);
-    creteAlert("success", "Success! deleted from wishlist.");
-    setWishlistStatus("deleted");
-  };
   return (
-    <wishlistContext.Provider
-      value={{
-        wishlistProducts,
-        setWishlistProducts,
-        addProductToWishlist,
-        deleteProductFromWishlist,
-        wishlistStatus,
-      }}
-    >
+    <WishlistContext.Provider value={{ wishlistProducts, addProductToWishlist, deleteProductFromWishlist,wishlistStatus }}>
       {children}
-    </wishlistContext.Provider>
+    </WishlistContext.Provider>
   );
 };
-export const useWishlistContext = () => {
-  const value = useContext(wishlistContext);
-  return value;
-};
-export default WishlistContextProvider;
+
+export const useWishlistContext = () => useContext(WishlistContext);
+export default WishlistProvider;
