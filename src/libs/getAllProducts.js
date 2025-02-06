@@ -13,11 +13,11 @@ const getAllProducts = () => {
 
   const images = [
     productImage1,    
-    productImage2,    
     productImage3,    
-    productImage4,    
     productImage5,    
     productImage6,    
+    productImage4,    
+    productImage2,     
   ];
 
   const products = [...allProducts]?.map((product, idx) => ({

@@ -1,3 +1,5 @@
+
+
 import About5 from "@/components/sections/about/About5";
 import Blogs2 from "@/components/sections/blogs/Blogs2";
 import CallToAction2 from "@/components/sections/call-to-action/CallToAction2";
@@ -9,7 +11,10 @@ import Hero2 from "@/components/sections/hero-banners/Hero2";
 import FeaturedProducts from "@/components/sections/products/FeaturedProducts";
 import Products3 from "@/components/sections/products/Products3";
 
+
+
 const Home2Main = () => {
+
   return (
     <main>
       <Hero2 />

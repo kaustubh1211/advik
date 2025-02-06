@@ -35,7 +35,12 @@ const HeaderCart = () => {
                 return (
                   <div key={idx} className="mini-cart-item clearfix">
                     <div className="mini-cart-img">
-                      <Link href={`/products/${product_id}`}>
+                      <Link 
+                          href="#"
+                          title="Quick View"
+                          data-bs-toggle="modal"
+                          data-bs-target="#quick_view_modal"
+                      >
                         <Image
                           src={image}
                           alt="Image"
@@ -57,10 +62,10 @@ const HeaderCart = () => {
                     </div>
                     <div className="mini-cart-info">
                       <h6>
-                        <Link href={`/products/${product_id}`}>
+                        {/* <Link href={`/products/${product_id}`}> */}
                           {" "}
                           {title?.length > 22 ? title?.slice(0, 22) : title}
-                        </Link>
+                        {/* </Link> */}
                       </h6>
                       <span className="mini-cart-quantity">
                         {quantity} x ₹{modifyAmount(netPrice)}

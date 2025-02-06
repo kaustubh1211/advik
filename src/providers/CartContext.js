@@ -21,7 +21,12 @@ const CartContextProvider = ({ children }) => {
   }, [session]);
 
   // Fetch cart from backend if logged in
-  const [loading, setLoading] = useState(false);
+
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const fetchCartFromBackend = debounce(async () => {
     if (session?.user?.id) {
@@ -55,101 +60,59 @@ const CartContextProvider = ({ children }) => {
   };
 
   // Sync cart with backend
-  const syncCartWithBackend = async (cart) => {
-    if (!cart || !Array.isArray(cart)) {
-      console.error("Invalid cart data during sync:", cart);
-      return;
-    }
-
-    const formattedCart = cart
-      .map(({ id, quantity, title, price }) => {
-        if (!id) {
-          console.error("Invalid cart item (missing ID):", {
-            id,
-            quantity,
-            title,
-            price,
-          });
-          return null;
-        }
-        return {
-          product_id: id, // Map frontend's `id` to backend's `product_id`
-          quantity,
-          title,
-          price,
-        };
-      })
-      .filter((item) => item !== null); // Remove invalid items
-
-    try {
-      console.log("Syncing cart with backend:", {
-        userId: session?.user?.id,
-        cart: formattedCart,
-      });
-
-      const response = await axios.post("/api/synch/page", {
-        userId: session?.user?.id,
-        cart: formattedCart,
-      });
-
-      console.log("Cart synced successfully:", response.data);
-    } catch (error) {
-      if (error.response?.status === 400) {
-        console.error("Validation error:", error.response.data);
-      } else {
-        console.error("Server error:", error.message);
-      }
-    }
-  };
+ 
 
   // Add product to cart
   const addProductToCart = async (currentProduct, isDecreament) => {
     const { id: product_id, title, quantity } = currentProduct;
-
+  
     if (!session?.user?.id) {
       window.location.href = `/login`;
-
       return;
     }
+  
     if (!product_id) {
       console.error("Product is missing an id:", currentProduct);
       return;
     }
-
+  
     const existingProduct = cartProducts.find((p) => p.id === product_id);
     const newQuantity = isDecreament
       ? Math.max((existingProduct?.quantity || 1) - 1, 0)
       : (existingProduct?.quantity || 0) + 1;
-
-    // If quantity is 0, remove the product instead of updating
+  
     if (newQuantity === 0) {
       return deleteProductFromCart(product_id, title);
     }
-
+  
     try {
       const { data } = await axios.post("/api/AddToCard/page", {
         userId: session?.user?.id,
         product_id,
-        quantity: isDecreament ? -1 : 1, // Increment or decrement
+        quantity: isDecreament ? -1 : 1,
       });
-
+  
       console.log("Cart update success:", data);
-      refetchCart();
-
-      // Update local state and storage
-      const updatedCart = cartProducts.map((product) =>
-        product.id === product_id
-          ? { ...product, quantity: newQuantity }
-          : product
-      );
-      console.log("add to card" + updatedCart);
+  
+      // Update the state immediately
+      const updatedCart = existingProduct
+        ? cartProducts.map((product) =>
+            product.id === product_id ? { ...product, quantity: newQuantity } : product
+          )
+        : [...cartProducts, { ...currentProduct, quantity: 1 }];
+  
       setCartProducts(updatedCart);
       addItemsToLocalstorage("cart", updatedCart);
+  
+      // Optional: Refetch from backend if needed
+      await refetchCart();
+  
       setCartStatus(isDecreament ? "decreased" : "increased");
     } catch (error) {
       console.error("Error updating cart:", error);
     }
   };
+  
 
   const deleteProductFromCart = async (currentId, currentTitle) => {
     if (!currentId) {
@@ -196,6 +159,7 @@ const CartContextProvider = ({ children }) => {
         setCartProducts,
         addProductToCart,
         deleteProductFromCart,
+        refetchCart,
         cartStatus,
       }}
     >

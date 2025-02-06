@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 const Hero1 = () => {
+
   return (
     <div className="ltn__slider-area ltn__slider-3  section-bg-1">
       <div className="ltn__slide-one-active slick-slide-arrow-1 slick-slide-dots-1">

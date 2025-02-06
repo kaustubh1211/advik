@@ -46,11 +46,10 @@
 ======================================*/
 
 import mplace from "./maplace-active";
-
 const main = () => {
   const checkJquery = setInterval(() => {
     if (typeof window !== "undefined" && window.$) {
-      clearCheckJquery();
+      clearCheckJquery(checkJquery);
       /* --------------------------------------------------------
               1. Variables
           --------------------------------------------------------- */
@@ -376,9 +375,10 @@ const main = () => {
       });
 
       /* --------------------------------------------------------
-              15. Slider One Active 
-          --------------------------------------------------------- */
-      $(".ltn__slide-one-active")
+      15. Slider One Active 
+      --------------------------------------------------------- */
+
+      $(".ltn__slide-one-active").not(".slick-initialized")
         .slick({
           autoplay: false,
           autoplaySpeed: 2000,
@@ -404,6 +404,7 @@ const main = () => {
             },
           ],
         })
+
         .on("afterChange", function () {
           new WOW().init();
         });

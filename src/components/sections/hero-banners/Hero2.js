@@ -1,7 +1,13 @@
+"use client"
 import Image from "next/image";
 import Link from "next/link";
-
+import { useState , useEffect } from "react";
 const Hero2 = () => {
+ const [isClient, setIsClient] = useState(false);
+ 
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   return (
     <div className="ltn__slider-area ltn__slider-3  section-bg-1">
       <div className="ltn__slide-one-active slick-slide-arrow-1 slick-slide-dots-1">

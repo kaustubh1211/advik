@@ -11,9 +11,11 @@ import { useCartContext } from "@/providers/CartContext";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import axios from "axios";
 
 const CartPrimary = () => {
   const { cartProducts: currentProducts, setCartProducts } = useCartContext();
+  const { refethCart } = useCartContext();
   const creteAlert = useSweetAlert();
   const cartProducts = currentProducts;
   // stats
@@ -25,41 +27,60 @@ const CartPrimary = () => {
   const vat = subTotalPrice ? 15 : 0;
   const totalPrice = modifyAmount(subTotalPrice + vat);
   const isCartProduct = cartProducts?.length || false;
- 
+
   const { data: session } = useSession();
   useEffect(() => {
     console.log("Session data:", session); // Debug session data
   }, [session]);
 
   useEffect(() => {
+    console.log("Cart Products:", cartProducts);
     setUpdateProducts([...cartProducts]);
     setIsisClient(true);
   }, [cartProducts]);
   // update cart
   const handleUpdateCart = async () => {
+    if (!session?.user?.id) {
+      console.log("User not found, can't update");
+      return;
+    }
+
     try {
-      // Sync updated cart with the backend
-      const response = await fetch("/api/synch/page", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: session.user.id, // Replace with actual user ID
-          cart: updateProducts,
-        }),
-      });
-  
-      if (!response.ok) throw new Error("Failed to sync cart");
-  
-      // Update state and local storage
-      addItemsToLocalstorage("cart", [...updateProducts]);
-      setCartProducts([...updateProducts]);
+      for (const product of updateProducts) {
+        const { product_id, quantity } = product;
+
+        console.log("Preparing to update product:", { product_id, quantity });
+
+        const response = await axios.post("/api/updateCart/page", {
+          userId: session.user.id,
+          product_id,
+          quantity,
+        });
+
+        console.log("API Response:", response.data); // Log API response
+
+        if (response.status !== 200) {
+          throw new Error(`Failed to update product with ID ${product_id}`);
+        }
+      }
+
       creteAlert("success", "Success! Cart updated.");
+      setCartProducts(updateProducts); 
       setIsUpdate(false);
     } catch (error) {
       console.error("Error updating cart:", error);
       creteAlert("error", "Failed to update cart.");
     }
   };
+  
+  useEffect(() => {
+    const newSubTotal = countTotalPrice(cartProducts);
+    const newVat = newSubTotal ? 15 : 0;
+    const newTotalPrice = modifyAmount(newSubTotal + newVat);
+  
+  }, [cartProducts]);
+    
+  
   return (
     <div className="liton__shoping-cart-area mb-120">
       <div className="container">
@@ -106,7 +127,7 @@ const CartPrimary = () => {
                         </td>
                         <td>
                           <button
-                            onClick={handleUpdateCart}
+                            onClick={handleUpdateCart }
                             type="submit"
                             className={`btn theme-btn-2  ${
                               isUpdate ? "" : "disabled"

@@ -35,7 +35,12 @@ const ProductCardPrimary2 = ({ product, isShowDisc }) => {
       onMouseEnter={() => setCurrentProduct(product)}
     >
       <div className="product-img">
-        <Link href={`/products/${id}`}>
+        <Link
+          href="#"
+          title="Quick View"
+          data-bs-toggle="modal"
+          data-bs-target="#quick_view_modal"
+        >
           <Image src={image} alt="#" width={1000} height={1000} />
         </Link>
         {status || isShowDisc ? (
@@ -56,7 +61,14 @@ const ProductCardPrimary2 = ({ product, isShowDisc }) => {
       </div>
       <div className="product-info">
         <h2 className="product-title">
-          <Link href={`/products/${id}`}>{title}</Link>
+          <Link
+            href="#"
+            title="Quick View"
+            data-bs-toggle="modal"
+            data-bs-target="#quick_view_modal"
+          >
+            {title}
+          </Link>
         </h2>
         <div className="product-ratting">
           <ul>

@@ -18,7 +18,15 @@ const CartProduct = ({
   setIsUpdate,
   isWishlist,
 }) => {
-  const { product_id, title, price, quantity: quantity1, image, disc, color } = product;
+  const {
+    product_id = product.id, 
+    title,
+    price,
+    quantity: quantity1,
+    image,
+    disc,
+    color,
+  } = product;
 
   // dom reference
   const inputRef = useRef(null);
@@ -39,35 +47,32 @@ const CartProduct = ({
     if (!isWishlist) {
       const inputParent = inputRef.current;
       const input = inputParent.querySelector("input");
-      const increament = inputParent.querySelector(".inc");
-      const decreament = inputParent.querySelector(".dec");
+      setTimeout(() => {
+        const increament = inputParent.querySelector(".inc");
+        const decreament = inputParent.querySelector(".dec");
 
-      const handleIncrement = () => {
-        setQuantity((prevQuantity) => prevQuantity + 1);
-        setIsUpdate(true);
-      };
-      const handleDecrement = () => {
-        setQuantity((prevQuantity) => prevQuantity - 1);
-        setIsUpdate(true);
-      };
-
-      // increament.addEventListener("click", handleIncrement);
-      // decreament.addEventListener("click", handleDecrement);
-
-      return () => {
-        // increament.removeEventListener("click", handleIncrement);
-        // decreament.removeEventListener("click", handleDecrement);
-      };
+        // increament.addEventListener("click", () => {
+        //   setQuantity(parseInt(input.value));
+        //   setIsUpdate(true);
+        // });
+        // decreament.addEventListener("click", () => {
+        //   setQuantity(parseInt(input.value));
+        //   setIsUpdate(true);
+        // });
+      }, 500);
     }
   }, [isWishlist]);
 
   // Handle updates to the product list when quantity changes
   useEffect(() => {
     if (!isWishlist) {
-      const updatedProducts = updateProducts.map((prod) =>
-        prod.product_id === product_id ? { ...prod, quantity } : prod
-      );
-      setUpdateProducts(updatedProducts);
+      setUpdateProducts((prevProducts) => {
+        const updatedProducts = prevProducts.map((prod) =>
+          prod.product_id === product_id ? { ...prod, quantity } : prod
+        );
+
+        return updatedProducts;
+      });
     }
   }, [isWishlist, quantity]);
 
@@ -85,13 +90,15 @@ const CartProduct = ({
         x
       </td>
       <td className="cart-product-image">
-        <Link href={`/products/${product_id}`}>
+        {/* <Link href={" "}> */}
           <Image src={image} alt={title} height={1000} width={1000} />
-        </Link>
+        {/* </Link> */}
       </td>
       <td className="cart-product-info">
         <h4>
-          <Link href={`/products/${product_id}`}>{sliceText(title, 30)}</Link>
+          {/* <Link href={""}> */}
+          {sliceText(title, 30)}
+          {/* </Link> */}
         </h4>
       </td>
       <td className="cart-product-price">₹{netPriceModified}</td>
@@ -119,14 +126,12 @@ const CartProduct = ({
       {isWishlist ? (
         <td
           className="cart-product-add-cart"
-          onClick={() =>{
-
+          onClick={() => {
             addProductToCart({
               ...product,
               quantity,
-            })
-          }
-          }
+            });
+          }}
         >
           <Link
             className="submit-button-1"

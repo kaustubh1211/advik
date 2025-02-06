@@ -13,7 +13,7 @@ export default async function handler(req, res) {
 
         // Fetch data from the database
         const [rows] = await pool.query("SELECT * FROM products");
-
+ 
         // Save data to the file
         fs.mkdirSync(path.dirname(filePath), { recursive: true }); // Ensure the directory exists
         fs.writeFileSync(filePath, JSON.stringify(rows, null, 2));

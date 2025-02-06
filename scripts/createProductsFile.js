@@ -1,5 +1,3 @@
-
-
 const fs = require("fs");
 const path = require("path");
 const mysql = require("mysql2/promise"); // Or the database library you're using
@@ -17,7 +15,10 @@ const pool = mysql.createPool({
     console.log("Fetching products from the database...");
     const [rows] = await pool.query("SELECT * FROM products");
 
-    const filePath = path.join(process.cwd(), "public/fakedata/newProducts.json");
+    const filePath = path.join(
+      process.cwd(),
+      "public/fakedata/newProducts.json"
+    );
 
     // Ensure the directory exists
     fs.mkdirSync(path.dirname(filePath), { recursive: true });

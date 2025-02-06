@@ -24,7 +24,7 @@ const ProductCard = ({ product }) => {
       onMouseEnter={() => setCurrentProduct(product)}
     >
       <div className="product-img">
-        <Link href={`/products/${id}`}>
+        {/* <Link href={`/products/${id}`}> */}
           <Image
             src={image}
             alt="#"
@@ -33,7 +33,7 @@ const ProductCard = ({ product }) => {
             width={1000}
             height={1000}
           />
-        </Link>
+        {/* </Link> */}
         {status ? (
           <div className="product-badge">
             <ul>
@@ -94,7 +94,9 @@ const ProductCard = ({ product }) => {
       </div>
       <div className="product-info">
         <h2 className="product-title">
-          <Link href={`/products/${id}`}>{title}</Link>
+          {/* <Link href={`/products/${id}`}> */}
+          {title}
+          {/* </Link> */}
         </h2>
         <div className="product-price">
           <span>₹{netPriceModified}</span> <del>₹{priceModified}</del>

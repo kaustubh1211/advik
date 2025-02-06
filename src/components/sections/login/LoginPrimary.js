@@ -6,13 +6,15 @@ import { signIn, useSession, signOut } from "next-auth/react";
 import { useEffect } from "react";
 import useSweetAlert from "@/hooks/useSweetAlert";
 import { useState } from "react";
+import '.././../../assets/css/custom.css'
+
 
 const LoginPrimary = () => {
   const [isClient, setIsClient] = useState(false);
   const [error, setError] = useState(null);
 
   const alertS = useSweetAlert();
-
+ 
   const { data: session } = useSession();
   useEffect(() => {
     // Prevent mismatches by waiting for client hydration
@@ -86,6 +88,15 @@ const LoginPrimary = () => {
         <div className="row">
           <div className="col-lg-6">
             <div className="account-login-inner">
+              <div className="text-center">
+
+              <button
+                onClick={() => signIn("google", { callbackUrl: "/" })}
+                className="login-with-google-btn"
+                >
+                Login with Google
+              </button>
+                </div>
               <form
                 onSubmit={handleLogin}
                 className="ltn__form-box contact-form-box"
@@ -113,6 +124,7 @@ const LoginPrimary = () => {
                     SIGN IN
                   </button>
                 </div>
+
                 <div className="go-to-btn mt-20">
                   <Link
                     href="#"

@@ -1,13 +1,11 @@
 "use client";
 import React from "react";
-import { useState , useEffect} from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useSession , signOut } from "next-auth/react";
+import { useSession, signOut  , signIn} from "next-auth/react";
 
 const RegisterPrimary = () => {
   const [error, setError] = useState(null);
-   
-
 
   //set all data in object
   const [formData, setFormData] = useState({
@@ -20,14 +18,16 @@ const RegisterPrimary = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-      
-    // valid password check 
-    const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-    if(!passwordRegex.test(formData.password)){
-      setError("Password must be at least 8 characters, include an uppercase letter, a lowercase letter, a number, and a special character.");
-      return ;
+    // valid password check
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    if (!passwordRegex.test(formData.password)) {
+      setError(
+        "Password must be at least 8 characters, include an uppercase letter, a lowercase letter, a number, and a special character."
+      );
+      return;
     }
     if (formData.password != formData.confirmPassword) {
       setError("Passwords do not match");
@@ -62,32 +62,31 @@ const RegisterPrimary = () => {
       console.log("Error-registeration" + err);
     }
   };
- const { data: session } = useSession();
+  const { data: session } = useSession();
   useEffect(() => {
     // Prevent mismatches by waiting for client hydration
     console.log("Session:", session);
   }, [session]);
 
-
   if (session) {
-     return (
-       <div className={" text-center"}>
-         <div className="account-create text-center pt-00">
-           <h1>WELCOME {session.user.name}!</h1>
-           <p>You are already signed in.</p>
-           <button
-             className="theme-btn-1 btn reverse-color btn-block"
-             type="submit"
-             onClick={() => {
-               signOut();
-             }}
-           >
-             Sign out
-           </button>
-         </div>
-       </div>
-     );
-   }
+    return (
+      <div className={" text-center"}>
+        <div className="account-create text-center pt-00">
+          <h1>WELCOME {session.user.name}!</h1>
+          <p>You are already signed in.</p>
+          <button
+            className="theme-btn-1 btn reverse-color btn-block"
+            type="submit"
+            onClick={() => {
+              signOut();
+            }}
+          >
+            Sign out
+          </button>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="ltn__login-area pb-110">
       <div className="container">
@@ -108,6 +107,14 @@ const RegisterPrimary = () => {
         <div className="row">
           <div className="col-lg-6 offset-lg-3">
             <div className="account-login-inner">
+              <div className="text-center">
+                <button
+                  onClick={() => signIn("google", { callbackUrl: "/" })}
+                  className="login-with-google-btn"
+                >
+                  Login with Google
+                </button>
+              </div>
               <form
                 action="#"
                 onSubmit={handleSubmit}
@@ -168,13 +175,14 @@ const RegisterPrimary = () => {
                 />
                 {error && <p style={{ color: "red" }}>{error}</p>}
                 <label className="checkbox-inline">
-                  <input type="checkbox" required /> I consent to Herboil processing my
-                  personal data in order to send personalized marketing material
-                  in accordance with the consent form and the privacy policy.
+                  <input type="checkbox" required /> I consent to Herboil
+                  processing my personal data in order to send personalized
+                  marketing material in accordance with the consent form and the
+                  privacy policy.
                 </label>
                 <label className="checkbox-inline">
-                  <input type="checkbox" required /> By clicking {`"create account"`}, I
-                  consent to the privacy policy.
+                  <input type="checkbox" required /> By clicking{" "}
+                  {`"create account"`}, I consent to the privacy policy.
                 </label>
                 <div className="btn-wrapper">
                   <button
