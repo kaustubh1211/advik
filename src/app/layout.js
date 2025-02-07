@@ -28,7 +28,7 @@ export default  function  RootLayout({ children, session }) {
   return (
     <html
       lang="en"
-      suppressHydrationWarning={true}
+      suppressHydrationWarning
       className={`${rajdhani.variable} ${open_sans.variable}`}
     >
       <body className={open_sans.className}>

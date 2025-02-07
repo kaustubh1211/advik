@@ -24,7 +24,7 @@ const CartPrimary = () => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [isClient, setIsisClient] = useState(false);
   const subTotalPrice = countTotalPrice(cartProducts);
-  const vat = subTotalPrice ? 15 : 0;
+  const vat = subTotalPrice ? 100 : 0;
   const totalPrice = modifyAmount(subTotalPrice + vat);
   const isCartProduct = cartProducts?.length || false;
 
@@ -51,7 +51,7 @@ const CartPrimary = () => {
 
         console.log("Preparing to update product:", { product_id, quantity });
 
-        const response = await axios.post("/api/updateCart/page", {
+        const response = await axios.post("/api/update/page", {
           userId: session.user.id,
           product_id,
           quantity,

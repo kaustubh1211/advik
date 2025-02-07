@@ -7,7 +7,7 @@ import axios from "axios";
 import { signIn, useSession, signOut } from "next-auth/react";
 import { debounce } from "lodash";
 import { redirect, useRouter } from "next/navigation";
-
+import Preloader from "@/components/shared/others/Preloader";
 const cartContext = createContext(null);
 
 const CartContextProvider = ({ children }) => {
@@ -20,14 +20,14 @@ const CartContextProvider = ({ children }) => {
     console.log("Session data:", session); // Debug session data
   }, [session]);
 
-  // Fetch cart from backend if logged in
-
+  
   const [isClient, setIsClient] = useState(false);
-
+  
   useEffect(() => {
     setIsClient(true);
   }, []);
-
+  
+  // Fetch cart from backend if logged in
   const fetchCartFromBackend = debounce(async () => {
     if (session?.user?.id) {
       try {
@@ -113,7 +113,9 @@ const CartContextProvider = ({ children }) => {
     }
   };
   
+  
 
+  // delete cart
   const deleteProductFromCart = async (currentId, currentTitle) => {
     if (!currentId) {
       console.error("❌ Product ID is missing. Cannot delete from cart.");

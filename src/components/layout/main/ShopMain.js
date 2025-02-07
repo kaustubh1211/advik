@@ -12,7 +12,22 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const ShopMain = ({ title, isSidebar, text, currentTapId }) => {
-  const allProducts = getAllProducts();
+  const [allProducts, setAllProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const products = await getAllProducts(); // ✅ Await the response
+        console.log("ShopMain Products:", products); // ✅ Debugging log
+        setAllProducts(products); // ✅ Store in state
+      } catch (error) {
+        console.error("Error fetching products in ShopMain:", error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+  console.log("shop main"+allProducts);
   const category = useSearchParams()?.get("category");
   const brand = useSearchParams()?.get("brand");
   const tag = useSearchParams()?.get("tag");

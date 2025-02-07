@@ -13,7 +13,7 @@ import countCommentLength from "@/libs/countCommentLength";
 import modifyNumber from "@/libs/modifyNumber";
 const ProductDetailsRight = ({ product }) => {
   // destructure current product
-  const { id, title, price, reviews, disc, size, color } = product;
+  const { id, title, price, reviews, disc, size, color , desc } = product;
   // current Date
 
   // hooks
@@ -52,12 +52,12 @@ const ProductDetailsRight = ({ product }) => {
     setTimeout(() => {
       const increament = inputParent.querySelector(".inc");
       const decreament = inputParent.querySelector(".dec");
-      increament.addEventListener("click", () => {
-        setQuantity(parseInt(input.value));
-      });
-      decreament.addEventListener("click", () => {
-        setQuantity(parseInt(input.value));
-      });
+      // increament.addEventListener("click", () => {
+      //   setQuantity(parseInt(input.value));
+      // });
+      // decreament.addEventListener("click", () => {
+      //   setQuantity(parseInt(input.value));
+      // });
     }, 500);
   }, []);
   return (
@@ -115,9 +115,10 @@ const ProductDetailsRight = ({ product }) => {
             <span>
               <Link href="/shop?category=fruits">Fruits</Link>{" "}
               <Link href="/shop?category=meat">Meat</Link>{" "}
-              <Link href="/shop?category=fish">Fish</Link>{" "}
+               <Link href="/shop?category=fish">Fish</Link>{" "}
               <Link href="/shop?category=fried">Fried</Link>
             </span> */}
+            {desc}
           </li>
         </ul>
       </div>

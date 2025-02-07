@@ -1,34 +1,29 @@
 
-import allProducts from "@/../public/fakedata/newProducts.json";
 
-import comments from "@/../public/fakedata/productComments.json";
-import reviews from "@/../public/fakedata/productReviews.json";
-const productImage1 = "/img/PRODUCTPHOTOS/6.png";
-const productImage2 = "/img/PRODUCTPHOTOS/4.png";
-const productImage3 = "/img/PRODUCTPHOTOS/3.png";
-const productImage4 = "/img/PRODUCTPHOTOS/2.png";
-const productImage5 = "/img/PRODUCTPHOTOS/5.png";
-const productImage6 = "/img/PRODUCTPHOTOS/1.png";
 const getAllProducts = () => {
-
-  const images = [
-    productImage1,    
-    productImage3,    
-    productImage5,    
-    productImage6,    
-    productImage4,    
-    productImage2,     
-  ];
-
-  const products = [...allProducts]?.map((product, idx) => ({
-    ...product,
-
-    image: images[idx],
-    // comments: comments?.filter(({ productId }) => productId === product?.id),
-    // reviews: reviews?.filter(({ productId }) => productId === product?.id),
-  }));
-
-  return products;
+  return fetch("api/product/page", { cache: "no-store" })
+    .then((res) => {
+      if (!res.ok) throw new Error("Failed to fetch products");
+      return res.json();
+    })
+    .then((allProducts) => {
+      const images = [
+        "/img/PRODUCTPHOTOS/6.png",
+        "/img/PRODUCTPHOTOS/3.png",
+        "/img/PRODUCTPHOTOS/5.png",
+        "/img/PRODUCTPHOTOS/1.png",
+        "/img/PRODUCTPHOTOS/4.png",
+        "/img/PRODUCTPHOTOS/2.png",
+      ];
+      return allProducts.map((product, idx) => ({
+        ...product,
+        image: images[idx % images.length], // Assign images in a loop
+      }));
+    })
+    .catch((error) => {
+      console.error("Error fetching products:", error);
+      return [];
+    });
 };
 
 export default getAllProducts;

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const CallToAction2 = () => {
+const   CallToAction2 = () => {
   return (
     <div
       className="ltn__call-to-action-area ltn__call-to-action-4 bg-image pt-115 pb-120 mb-120"
@@ -36,10 +36,10 @@ const CallToAction2 = () => {
         </div>
       </div>
       <div className="ltn__call-to-4-img-1">
-        <Image src="/img/makar sankranti/14.png" width={631} height={1000} alt="#" />
+        <Image src="/img/makar sankranti/14.png"  width={400} height={900} alt="#" />
       </div>
       <div className="ltn__call-to-4-img-2">
-        <Image src="/img/makar sankranti/15.png" width={514} height={1000} alt="#" />
+        <Image src="/img/makar sankranti/15.png" width={400} height={1000} alt="#" />
       </div>
     </div>
   );

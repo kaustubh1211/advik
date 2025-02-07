@@ -2,6 +2,7 @@ import Image from "next/image";
 import ProductDetailsRight from "../../products/ProductDetailsRight";
 
 const ProductDetailsQuick = ({ product }) => {
+  if (!product) return <p>Loading...</p>;
   const { image } = product;
 
   return (

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useWishlistContext } from "@/providers/WshlistContext";
 import controlModal from "@/libs/controlModal";
 const WishlistStatusModal = ({ product }) => {
+  if (!product) return <p>Loading...</p>;
   const { id, title, image } = product;
   const { wishlistStatus } = useWishlistContext();
 

@@ -76,6 +76,17 @@ const CartProduct = ({
     }
   }, [isWishlist, quantity]);
 
+
+  const handleDecrease = () => {
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+    setIsUpdate(true);
+  };
+
+  const handleIncrease = () => {
+    setQuantity((prev) => prev + 1);
+    setIsUpdate(true);
+  };
+
   return (
     <tr onMouseEnter={() => setCurrentProduct(product)}>
       <td
@@ -107,6 +118,7 @@ const CartProduct = ({
       ) : (
         <td className="cart-product-quantity">
           <div className="cart-plus-minus" ref={inputRef}>
+          <button onClick={handleDecrease}  className="dec qtybutton">-</button>
             <input
               value={quantity}
               type="number"
@@ -119,6 +131,8 @@ const CartProduct = ({
                 setIsUpdate(true);
               }}
             />
+            
+            <button  onClick={handleIncrease} className="inc qtybutton">+</button>
           </div>
         </td>
       )}

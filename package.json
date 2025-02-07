@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "create-products-file": "node scripts/createProductsFile.js",
-    "dev": "npm run create-products-file && next dev",
-    "build": "npm run create-products-file && next build",
-    "start": "npm run create-products-file && next start",
+ 
+    "dev": "next dev",
+    "build": "next build",
+    "start": " next start",
     "lint": "next lint"
   },
   "dependencies": {
