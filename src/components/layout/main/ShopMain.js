@@ -9,17 +9,22 @@ import getRangeValue from "@/libs/getRangeValue";
 import makeText from "@/libs/makeText";
 import CommonContext from "@/providers/CommonContext";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState , useRef } from "react";
 
 const ShopMain = ({ title, isSidebar, text, currentTapId }) => {
   const [allProducts, setAllProducts] = useState([]);
 
+  const hasFetched = useRef(false); // Prevent multiple calls
+
   useEffect(() => {
+    if (hasFetched.current) return; // ✅ Prevent multiple API calls
+    hasFetched.current = true;
+
     const fetchProducts = async () => {
       try {
         const products = await getAllProducts(); // ✅ Await the response
-        console.log("ShopMain Products:", products); // ✅ Debugging log
-        setAllProducts(products); // ✅ Store in state
+        console.log("ShopMain Products:", products);
+        setAllProducts(products);
       } catch (error) {
         console.error("Error fetching products in ShopMain:", error);
       }
@@ -27,7 +32,7 @@ const ShopMain = ({ title, isSidebar, text, currentTapId }) => {
 
     fetchProducts();
   }, []);
-  console.log("shop main"+allProducts);
+  
   const category = useSearchParams()?.get("category");
   const brand = useSearchParams()?.get("brand");
   const tag = useSearchParams()?.get("tag");

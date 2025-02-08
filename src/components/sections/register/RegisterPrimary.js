@@ -2,11 +2,11 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useSession, signOut  , signIn} from "next-auth/react";
+import { useSession, signOut, signIn } from "next-auth/react";
+import '.././../../assets/css/custom.css'
 
 const RegisterPrimary = () => {
   const [error, setError] = useState(null);
-
   //set all data in object
   const [formData, setFormData] = useState({
     name: "",
@@ -98,8 +98,8 @@ const RegisterPrimary = () => {
                 Your Account
               </h1>
               <p>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. <br />
-                Sit aliquid, Non distinctio vel iste.
+                Access your account to manage orders, track purchases, and enjoy
+                exclusive deals. Stay connected and shop seamlessly!
               </p>
             </div>
           </div>
@@ -119,6 +119,7 @@ const RegisterPrimary = () => {
                 action="#"
                 onSubmit={handleSubmit}
                 className="ltn__form-box contact-form-box"
+
               >
                 <input
                   type="text"
@@ -151,15 +152,17 @@ const RegisterPrimary = () => {
                   required
                 />
                 <input
-                  type="password"
+                  type= "password"
                   name="password"
                   placeholder="Password*"
                   value={formData.password}
+       
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
                   required
                 />
+                
                 <input
                   type="password"
                   name="confirmpassword"
@@ -173,6 +176,7 @@ const RegisterPrimary = () => {
                   }
                   required
                 />
+             
                 {error && <p style={{ color: "red" }}>{error}</p>}
                 <label className="checkbox-inline">
                   <input type="checkbox" required /> I consent to Herboil

@@ -79,8 +79,7 @@ const LoginPrimary = () => {
                 To Your Account
               </h1>
               <p>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. <br />
-                Sit aliquid, Non distinctio vel iste.
+              Access your account to manage orders, track purchases, and enjoy exclusive deals. Stay connected and shop seamlessly!
               </p>
             </div>
           </div>
@@ -127,10 +126,8 @@ const LoginPrimary = () => {
 
                 <div className="go-to-btn mt-20">
                   <Link
-                    href="#"
-                    title="Wishlist"
-                    data-bs-toggle="modal"
-                    data-bs-target="#ltn_forget_password_modal"
+                    href=" "
+                   
                   >
                     <small>FORGOTTEN YOUR PASSWORD?</small>
                   </Link>

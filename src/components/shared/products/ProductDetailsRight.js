@@ -60,6 +60,17 @@ const ProductDetailsRight = ({ product }) => {
       // });
     }, 500);
   }, []);
+
+  const handleDecrease = () => {
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+
+  };
+
+  const handleIncrease = () => {
+    setQuantity((prev) => prev + 1);
+
+  };
+
   return (
     <div className="modal-product-info shop-details-info pl-0" id="details">
       {/* ratings */}
@@ -129,6 +140,7 @@ const ProductDetailsRight = ({ product }) => {
         <ul>
           <li>
             <div className="cart-plus-minus" ref={inputRef}>
+            <button onClick={handleDecrease}  className="dec qtybutton">-</button>
               <input
                 onChange={(e) =>
                   setQuantity(
@@ -140,6 +152,7 @@ const ProductDetailsRight = ({ product }) => {
                 name="qtybutton"
                 className="cart-plus-minus-box"
               />
+              <button onClick={handleIncrease} className="inc qtybutton">+</button>
             </div>
           </li>{" "}
           <li>

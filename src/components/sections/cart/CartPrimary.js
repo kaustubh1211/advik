@@ -15,30 +15,89 @@ import axios from "axios";
 
 const CartPrimary = () => {
   const { cartProducts: currentProducts, setCartProducts } = useCartContext();
-  const { refethCart } = useCartContext();
-  const creteAlert = useSweetAlert();
+  const { refetchCart } = useCartContext();
+  const createAlert = useSweetAlert();
   const cartProducts = currentProducts;
-  // stats
-  const [updateProducts, setUpdateProducts] = useState(cartProducts);
 
+  // states
+  const [updateProducts, setUpdateProducts] = useState(cartProducts);
   const [isUpdate, setIsUpdate] = useState(false);
-  const [isClient, setIsisClient] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
+  const [discount, setDiscount] = useState(0); // Store discount percentage
+  const [gst, setGst] = useState(0);
   const subTotalPrice = countTotalPrice(cartProducts);
-  const vat = subTotalPrice ? 100 : 0;
-  const totalPrice = modifyAmount(subTotalPrice + vat);
+  const gstTotal = (subTotalPrice * 18) / 100; // 18% GST Calculation
+  const vat = 0;
+  const discountedPrice = discount ? (subTotalPrice * discount) / 100 : 0;
+  const totalPrice = modifyAmount(
+    subTotalPrice - discountedPrice + vat + gstTotal
+  );
   const isCartProduct = cartProducts?.length || false;
 
   const { data: session } = useSession();
+
   useEffect(() => {
     console.log("Session data:", session); // Debug session data
   }, [session]);
 
   useEffect(() => {
+    if (session?.user?.id) {
+      fetchAppliedCoupon();
+    }
+  }, [session]);
+  useEffect(() => {
     console.log("Cart Products:", cartProducts);
     setUpdateProducts([...cartProducts]);
-    setIsisClient(true);
+    setIsClient(true);
   }, [cartProducts]);
-  // update cart
+
+  // Apply coupon code
+  const fetchAppliedCoupon = async () => {
+    try {
+      const response = await axios.get(
+        `/api/coupon/user?userId=${session.user.id}`
+      );
+      if (response.data.success) {
+        setDiscount(response.data.coupon.discount);
+      }
+    } catch (error) {
+      console.error("Error fetching coupon:", error);
+    }
+  };
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) {
+      createAlert("error", "Please enter a coupon code.");
+      return;
+    }
+  
+    try {
+      const response = await axios.post("/api/coupon/apply", {
+        userId: session?.user?.id, // Ensure user is authenticated
+        couponCode,
+      });
+  
+      if (response.status === 200) {
+        const { discount } = response.data;
+        setDiscount(discount);
+        createAlert("success", `Coupon applied! Discount: ${discount}%`);
+      } else {
+        throw new Error("Invalid coupon");
+      }
+    } catch (error) {
+      console.error("Error applying coupon:", error);
+  
+      // Check if the error response exists and has a message
+      const errorMessage =
+        error.response?.data?.message || "Invalid or expired coupon.";
+  
+      createAlert("error", errorMessage);
+      setDiscount(0); // Reset discount if coupon is invalid
+    }
+  };
+
+  // Update cart items
   const handleUpdateCart = async () => {
     if (!session?.user?.id) {
       console.log("User not found, can't update");
@@ -49,7 +108,7 @@ const CartPrimary = () => {
       for (const product of updateProducts) {
         const { product_id, quantity } = product;
 
-        console.log("Preparing to update product:", { product_id, quantity });
+        console.log("Updating product:", { product_id, quantity });
 
         const response = await axios.post("/api/update/page", {
           userId: session.user.id,
@@ -57,30 +116,20 @@ const CartPrimary = () => {
           quantity,
         });
 
-        console.log("API Response:", response.data); // Log API response
-
         if (response.status !== 200) {
-          throw new Error(`Failed to update product with ID ${product_id}`);
+          throw new Error(`Failed to update product ID ${product_id}`);
         }
       }
 
-      creteAlert("success", "Success! Cart updated.");
-      setCartProducts(updateProducts); 
+      createAlert("success", "Cart updated successfully!");
+      setCartProducts(updateProducts);
       setIsUpdate(false);
     } catch (error) {
       console.error("Error updating cart:", error);
-      creteAlert("error", "Failed to update cart.");
+      createAlert("error", "Failed to update cart.");
     }
   };
-  
-  useEffect(() => {
-    const newSubTotal = countTotalPrice(cartProducts);
-    const newVat = newSubTotal ? 15 : 0;
-    const newTotalPrice = modifyAmount(newSubTotal + newVat);
-  
-  }, [cartProducts]);
-    
-  
+
   return (
     <div className="liton__shoping-cart-area mb-120">
       <div className="container">
@@ -109,6 +158,7 @@ const CartPrimary = () => {
                         ))
                       )}
 
+                      {/* Coupon Row */}
                       <tr className="cart-coupon-row">
                         <td colSpan="6">
                           <div className="cart-coupon">
@@ -116,9 +166,12 @@ const CartPrimary = () => {
                               type="text"
                               name="cart-coupon"
                               placeholder="Coupon code"
-                            />{" "}
+                              value={couponCode}
+                              onChange={(e) => setCouponCode(e.target.value)}
+                            />
                             <button
-                              type="submit"
+                              type="button"
+                              onClick={handleApplyCoupon}
                               className="btn theme-btn-2 btn-effect-2"
                             >
                               Apply Coupon
@@ -127,12 +180,12 @@ const CartPrimary = () => {
                         </td>
                         <td>
                           <button
-                            onClick={handleUpdateCart }
+                            onClick={handleUpdateCart}
                             type="submit"
-                            className={`btn theme-btn-2  ${
+                            className={`btn theme-btn-2 ${
                               isUpdate ? "" : "disabled"
                             }`}
-                            disabled={isUpdate ? false : true}
+                            disabled={!isUpdate}
                           >
                             Update Cart
                           </button>
@@ -153,13 +206,19 @@ const CartPrimary = () => {
                         <td>Cart Subtotal</td>
                         <td>₹{modifyAmount(subTotalPrice)}</td>
                       </tr>
+                      {discount > 0 && (
+                        <tr>
+                          <td>Coupon Discount ({discount}%)</td>
+                          <td>-₹{modifyAmount(discountedPrice)}</td>
+                        </tr>
+                      )}
                       <tr>
-                        <td>Shipping and Handing</td>
+                        <td>Shipping and Handling</td>
                         <td>₹{modifyAmount(vat)}</td>
                       </tr>
                       <tr>
-                        <td>GST</td>
-                        <td>₹00.00</td>
+                        <td>GST (18%)</td>
+                        <td>₹{modifyAmount(gstTotal)}</td>
                       </tr>
                       <tr>
                         <td>
@@ -178,9 +237,12 @@ const CartPrimary = () => {
                   <Link
                     href="/checkout"
                     className="theme-btn-1 btn btn-effect-1"
-                    disabled={isUpdate ? false : true}
+                    style={{
+                      opacity: isCartProduct ? 1 : 0.5,
+                      pointerEvents: isCartProduct ? "auto" : "none",
+                    }}
                   >
-                    Proceed to checkout
+                    Proceed to Checkout
                   </Link>
                 </div>
               </div>

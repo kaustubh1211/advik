@@ -24,12 +24,14 @@ const CheckoutPrimary = () => {
   const currentColor = searchParams.get("color");
   const currentSize = searchParams.get("size");
   const { cartProducts: products } = useCartContext();
-  const currentProduct = {
-    ...allProducts?.find(({ id }) => id === currentId),
-    quantity: currentQuantity,
-    color: currentColor,
-    size: currentSize,
-  };
+  const currentProduct = Array.isArray(allProducts) && allProducts.length > 0
+  ? { 
+      ...allProducts.find(({ id }) => id === currentId),
+      quantity: currentQuantity,
+      color: currentColor,
+      size: currentSize
+    }
+  : {}
 
   const isProducts = currentProduct?.title || products?.length ? true : false;
   const subtotal = countTotalPrice(

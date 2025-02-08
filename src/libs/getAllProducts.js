@@ -1,29 +1,27 @@
+let cachedProducts = null;
+let lastFetchTime = null;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
 
+const getAllProducts = async () => {
+  const now = Date.now();
+  
+  // Return cached data if valid
+  if (cachedProducts && lastFetchTime && (now - lastFetchTime) < CACHE_DURATION) {
+    return cachedProducts;
+  }
 
-const getAllProducts = () => {
-  return fetch("api/product/page", { cache: "no-store" })
-    .then((res) => {
-      if (!res.ok) throw new Error("Failed to fetch products");
-      return res.json();
-    })
-    .then((allProducts) => {
-      const images = [
-        "/img/PRODUCTPHOTOS/6.png",
-        "/img/PRODUCTPHOTOS/3.png",
-        "/img/PRODUCTPHOTOS/5.png",
-        "/img/PRODUCTPHOTOS/1.png",
-        "/img/PRODUCTPHOTOS/4.png",
-        "/img/PRODUCTPHOTOS/2.png",
-      ];
-      return allProducts.map((product, idx) => ({
-        ...product,
-        image: images[idx % images.length], // Assign images in a loop
-      }));
-    })
-    .catch((error) => {
-      console.error("Error fetching products:", error);
-      return [];
-    });
+  try {
+    const res = await fetch("api/product/page", { cache: "no-store" });
+    if (!res.ok) throw new Error("Failed to fetch products");
+    
+    cachedProducts = await res.json();
+    lastFetchTime = now;
+    return cachedProducts;
+    
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return cachedProducts || []; // Return cached data on error if available
+  }
 };
 
 export default getAllProducts;

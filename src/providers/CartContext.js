@@ -28,6 +28,7 @@ const CartContextProvider = ({ children }) => {
   }, []);
   
   // Fetch cart from backend if logged in
+  useEffect(() => {
   const fetchCartFromBackend = debounce(async () => {
     if (session?.user?.id) {
       try {
@@ -42,9 +43,9 @@ const CartContextProvider = ({ children }) => {
     }
   }, 500); // 500ms debounce delay
 
-  useEffect(() => {
+
     if (session) fetchCartFromBackend();
-  }, [session]);
+  }, []);
 
   const refetchCart = async () => {
     if (session) {

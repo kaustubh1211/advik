@@ -22,6 +22,8 @@ const WishlistProvider = ({ children }) => {
   }, [session]);
   const userId = session?.user?.id;
   // Fetch Wishlist Data from API
+
+  useEffect(() => {
   const fetchWishlist = async () => {
     try {
       // if (!userId) {
@@ -43,10 +45,8 @@ const WishlistProvider = ({ children }) => {
       console.error("Error fetching wishlist:", error);
     }
   };
-
-  useEffect(() => {
-    fetchWishlist();
-  }, [session]);
+  if(session) fetchWishlist();
+  }, [ ]);
 
   // Add Product to Wishlist
   const addProductToWishlist = async (currentProduct) => {

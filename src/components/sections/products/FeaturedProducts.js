@@ -12,7 +12,7 @@ const FeaturedProducts = () => {
     const fetchProducts = async () => {
       try {
         const products = await getAllProducts();
-        console.log("Fetched Products:", products); // Debugging output
+    
 
         setAllProducts(Array.isArray(products) ? products : []); // Ensure it's an array
       } catch (error) {
@@ -25,7 +25,7 @@ const FeaturedProducts = () => {
     fetchProducts();
   }, []); // Run only once when the component mounts
 
-  if (loading) return <p>Loading...</p>; // Show loading state
+  if (loading) return <p></p>; // Show loading state
 
   const featuredProducts = allProducts.filter(({ featured }) => featured).slice(0, 4);
   return (
